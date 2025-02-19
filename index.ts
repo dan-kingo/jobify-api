@@ -1,5 +1,4 @@
 import express, { Express, Request, Response } from "express";
-
 interface Job {
   id: string;
   company: string;
@@ -55,19 +54,32 @@ const app: Express = express();
 const port = process.env.PORT || 3000;
 //handle simple routes
 
+app.use(express.json());
 // get all jobs
-app.get("/jobs", (_req: Request, res: Response) => {
+app.get("/api/jobs", (_req: Request, res: Response) => {
   res.send(jobs);
 });
 
 // get a single job
-app.get("/jobs/:id", (req: Request, res: Response) => {
+app.get("/api/jobs/:id", (req: Request, res: Response) => {
   const job: Job = jobs.find((j) => j.id === req.params.id);
   if (!job) {
-    res.send(`Course with id ${req.params.id} is not found!`);
+    res.send(`Job with id ${req.params.id} is not found!`);
     return;
   }
 
+  // add/post a job
+  app.post("/api/jobs", (req: Request, res: Response) => {
+    const job: Job = {
+      id: `jobId${jobs.length + 1}`,
+      company: req.body.company,
+      salary: req.body.salary,
+      category: req.body.category,
+    };
+
+    jobs.push(job);
+    res.send(job);
+  });
   res.send(job);
 });
 
