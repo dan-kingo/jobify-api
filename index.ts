@@ -121,6 +121,20 @@ app.put("/api/jobs/:id", (req: Request, res: Response) => {
     }
   }
 });
+
+// handle job delete method
+app.delete("/api/jobs/:id", (req: Request, res: Response) => {
+  //first find the job
+  let job = jobs.find((j) => j.id === req.params.id);
+  if (!job) {
+    res.status(404).send(`Job with id ${req.params.id} is not found!`);
+    return;
+  }
+  let index = jobs.indexOf(job);
+  jobs.splice(index, 1);
+
+  res.send(job);
+});
 app.listen(port, () => {
   console.log(`server started at port ${port}`);
 });
