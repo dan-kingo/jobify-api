@@ -29,12 +29,6 @@ const jobs: Job[] = [
     category: "Back-End Development",
   },
   {
-    id: "jobId1",
-    company: "Google",
-    salary: 19_000,
-    category: "Back-End Development",
-  },
-  {
     id: "jobId2",
     company: "Amazon",
     salary: 14_000,
@@ -93,6 +87,32 @@ app.post("/api/jobs", (req: Request, res: Response) => {
     if (error instanceof ZodError) {
       console.log(error.errors);
       const errorMessages = error.errors.map((issue: any) => ({
+        message: `${issue.path.join(".")} is ${issue.message}`,
+      }));
+      res.status(400).json({ error: "Invalid data", details: errorMessages });
+    } else {
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
+});
+
+// handle job update method
+app.put("/api/jobs/:id", (req: Request, res: Response) => {
+  try {
+    // first find the job
+    let job = jobs.find((j) => j.id === req.params.id);
+    if (!job) {
+      res.status(404).send(`Job with id ${req.params.id} is not found!`);
+      return;
+    }
+    const result = schema.parse(req.body);
+    // update jobs
+    Object.assign(job, result);
+
+    res.send(job);
+  } catch (err) {
+    if (err instanceof ZodError) {
+      const errorMessages = err.errors.map((issue: any) => ({
         message: `${issue.path.join(".")} is ${issue.message}`,
       }));
       res.status(400).json({ error: "Invalid data", details: errorMessages });
