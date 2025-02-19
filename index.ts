@@ -1,16 +1,25 @@
 import express, { Express, Request, Response } from "express";
-interface Job {
-  id: string;
-  company: string;
-  salary: number;
-  category:
-    | "Web Development"
-    | "IOS Development"
-    | "Android Development"
-    | "Front-End Development"
-    | "Back-End Development"
-    | "Graphics Design";
-}
+import { z, ZodError } from "zod";
+
+const app: Express = express();
+const port = process.env.PORT || 3000;
+
+app.use(express.json());
+
+const schema = z.object({
+  id: z.string().optional(),
+  company: z.string(),
+  salary: z.number().min(9000),
+  category: z.enum([
+    "Web Development",
+    "IOS Development",
+    "Android Development",
+    "Front-End Development",
+    "Back-End Development",
+    "Graphics Design",
+  ]),
+});
+type Job = z.infer<typeof schema>;
 
 const jobs: Job[] = [
   {
@@ -50,11 +59,8 @@ const jobs: Job[] = [
     category: "Graphics Design",
   },
 ];
-const app: Express = express();
-const port = process.env.PORT || 3000;
 //handle simple routes
 
-app.use(express.json());
 // get all jobs
 app.get("/api/jobs", (_req: Request, res: Response) => {
   res.send(jobs);
@@ -67,22 +73,34 @@ app.get("/api/jobs/:id", (req: Request, res: Response) => {
     res.send(`Job with id ${req.params.id} is not found!`);
     return;
   }
+  res.send(job);
+});
 
-  // add/post a job
-  app.post("/api/jobs", (req: Request, res: Response) => {
+// add/post a job
+app.post("/api/jobs", (req: Request, res: Response) => {
+  try {
+    const result = schema.parse(req.body);
     const job: Job = {
       id: `jobId${jobs.length + 1}`,
-      company: req.body.company,
-      salary: req.body.salary,
+      company: result.company,
+      salary: result.salary,
       category: req.body.category,
     };
 
     jobs.push(job);
     res.send(job);
-  });
-  res.send(job);
+  } catch (error) {
+    if (error instanceof ZodError) {
+      console.log(error.errors);
+      const errorMessages = error.errors.map((issue: any) => ({
+        message: `${issue.path.join(".")} is ${issue.message}`,
+      }));
+      res.status(400).json({ error: "Invalid data", details: errorMessages });
+    } else {
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
 });
-
 app.listen(port, () => {
   console.log(`server started at port ${port}`);
 });
