@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
 import jobs from "../models/jobs";
-import schema from "../schema/jobSchemas";
+import schema, { Job } from "../schema/jobSchemas";
 
 const getAllJobs = (_req: Request, res: Response) => {
   res.send(jobs);
 };
 
-const getJob = (req: Request, res: Response) => {
+const getJob = (req: Request<Job>, res: Response) => {
   const job = jobs.find((j) => j.id === req.params.id);
   if (!job) {
     res.send(`Job with id ${req.params.id} is not found!`);
@@ -28,7 +28,7 @@ const addJob = (req: Request, res: Response) => {
   res.send(job);
 };
 
-const updateJob = (req: Request, res: Response) => {
+const updateJob = (req: Request<Job>, res: Response) => {
   // first find the job
   let job = jobs.find((j) => j.id === req.params.id);
   if (!job) {
@@ -42,7 +42,7 @@ const updateJob = (req: Request, res: Response) => {
   res.send(job);
 };
 
-const deleteJob = (req: Request, res: Response) => {
+const deleteJob = (req: Request<Job>, res: Response) => {
   //first find the job
   let job = jobs.find((j) => j.id === req.params.id);
   if (!job) {

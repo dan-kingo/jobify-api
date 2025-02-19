@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { z, ZodError } from "zod";
+import { z, ZodError, ZodIssue } from "zod";
 
 export function validateData(schema: z.ZodObject<any, any>) {
   return (req: Request, res: Response, next: NextFunction) => {
@@ -8,7 +8,7 @@ export function validateData(schema: z.ZodObject<any, any>) {
       next();
     } catch (error) {
       if (error instanceof ZodError) {
-        const errorMessages = error.errors.map((issue: any) => ({
+        const errorMessages = error.errors.map((issue: ZodIssue) => ({
           message: `${issue.path.join(".")} is ${issue.message}`,
         }));
         res.status(400).json({ error: "Invalid data", details: errorMessages });
