@@ -1,6 +1,6 @@
 import express, { Express, Request, Response } from "express";
 
-interface Jobs {
+interface Job {
   id: string;
   company: string;
   salary: number;
@@ -13,7 +13,7 @@ interface Jobs {
     | "Graphics Design";
 }
 
-const jobs: Jobs[] = [
+const jobs: Job[] = [
   {
     id: "jobId1",
     company: "Google",
@@ -55,8 +55,20 @@ const app: Express = express();
 const port = process.env.PORT || 3000;
 //handle simple routes
 
+// get all jobs
 app.get("/jobs", (_req: Request, res: Response) => {
   res.send(jobs);
+});
+
+// get a single job
+app.get("/jobs/:id", (req: Request, res: Response) => {
+  const job: Job = jobs.find((j) => j.id === req.params.id);
+  if (!job) {
+    res.send(`Course with id ${req.params.id} is not found!`);
+    return;
+  }
+
+  res.send(job);
 });
 
 app.listen(port, () => {
