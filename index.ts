@@ -1,3 +1,6 @@
+import * as dotenv from "dotenv";
+dotenv.config();
+console.log(process.env.NODE_ENV);
 import express, { Express } from "express";
 import cors from "cors";
 import morgan from "morgan";
