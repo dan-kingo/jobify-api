@@ -4,7 +4,7 @@ import fs from "fs";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const logDirectory = path.join(__dirname, "logs");
+const logDirectory = path.join(__dirname, "..", "logs");
 
 if (!fs.existsSync(logDirectory)) {
 }
