@@ -26,17 +26,21 @@ const addJob = async (req: Request, res: Response) => {
     requirements,
     status,
   } = req.body;
-  const job = await Job.create({
-    title,
-    description,
-    company,
-    location,
-    jobType,
-    salary,
-    requirements,
-    status,
-  });
-  res.send(job);
+  try {
+    const job = await Job.create({
+      title,
+      description,
+      company,
+      location,
+      jobType,
+      salary,
+      requirements,
+      status,
+    });
+    res.send(job);
+  } catch (err) {
+    res.status(500).json({ message: "Internal server error is occured!" });
+  }
 };
 
 const updateJob = (req: Request<Job>, res: Response) => {
