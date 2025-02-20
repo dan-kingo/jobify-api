@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
-import jobs from "../models/jobs";
-import schema, { Job } from "../schema/jobSchemas";
+import schema from "../schema/jobSchemas";
+import Job from "../models/jobs";
 
 const getAllJobs = (_req: Request, res: Response) => {
   res.send(jobs);
 };
 
-const getJob = (req: Request<Job>, res: Response) => {
+const getJob = (req: Request, res: Response) => {
   const job = jobs.find((j) => j.id === req.params.id);
   if (!job) {
     res.send(`Job with id ${req.params.id} is not found!`);
@@ -15,16 +15,27 @@ const getJob = (req: Request<Job>, res: Response) => {
   res.send(job);
 };
 
-const addJob = (req: Request, res: Response) => {
-  const result = schema.parse(req.body);
-  const job = {
-    id: `jobId${jobs.length + 1}`,
-    company: result.company,
-    salary: result.salary,
-    category: req.body.category,
-  };
-
-  jobs.push(job);
+const addJob = async (req: Request, res: Response) => {
+  const {
+    title,
+    description,
+    company,
+    location,
+    jobType,
+    salary,
+    requirements,
+    status,
+  } = req.body;
+  const job = await Job.create({
+    title,
+    description,
+    company,
+    location,
+    jobType,
+    salary,
+    requirements,
+    status,
+  });
   res.send(job);
 };
 

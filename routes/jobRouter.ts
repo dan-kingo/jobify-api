@@ -13,7 +13,7 @@ const router = Router();
 const URL = "/api/jobs";
 router.get(`${URL}`, getAllJobs);
 router.get(`${URL}/:id`, getJob);
-router.post(`${URL}`, validateData(schema), addJob);
+router.post(`${URL}`, addJob);
 router.put(`${URL}/:id`, validateData(schema), updateJob);
 router.delete(`${URL}/:id`, deleteJob);
 

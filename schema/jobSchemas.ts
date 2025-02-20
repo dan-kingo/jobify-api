@@ -13,5 +13,4 @@ const schema = z.object({
   ]),
 });
 
-export type Job = z.infer<typeof schema>;
 export default schema;
