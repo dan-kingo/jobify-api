@@ -1,36 +1,43 @@
-import { Job } from "../schema/jobSchemas";
+import mongoose from "mongoose";
 
-const jobs: Job[] = [
+const jobSchema = new mongoose.Schema(
   {
-    id: "jobId1",
-    company: "Google",
-    salary: 19_000,
-    category: "Back-End Development",
+    title: {
+      type: String,
+      required: true,
+    },
+    description: {
+      type: String,
+      required: true,
+    },
+    company: {
+      type: String,
+      required: true,
+    },
+    location: {
+      type: String,
+      required: true,
+    },
+    jobType: {
+      type: String,
+      required: true,
+      enum: ["Full-Time", "Part-Time", "Contract", "Freelance", "Internship"],
+    },
+    salary: {
+      type: Number,
+      required: false,
+    },
+    requirements: {
+      type: [String],
+      default: [],
+    },
+    status: {
+      type: String,
+      enum: ["Open", "Closed"],
+      default: "Open",
+    },
   },
-  {
-    id: "jobId2",
-    company: "Amazon",
-    salary: 14_000,
-    category: "Front-End Development",
-  },
-  {
-    id: "jobId3",
-    company: "Meta",
-    salary: 21_000,
-    category: "IOS Development",
-  },
-  {
-    id: "jobId4",
-    company: "Apple",
-    salary: 21_000,
-    category: "Android Development",
-  },
-  {
-    id: "jobId5",
-    company: "Tiktok",
-    salary: 27_000,
-    category: "Graphics Design",
-  },
-];
+  { timestamps: true }
+);
 
-export default jobs;
+export default mongoose.model("Job", jobSchema);
