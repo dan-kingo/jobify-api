@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import schema from "../schema/jobSchemas";
 import Job from "../models/jobs";
 
 const getAllJobs = async (_req: Request, res: Response) => {
@@ -46,18 +45,18 @@ const addJob = async (req: Request, res: Response) => {
   }
 };
 
-const updateJob = (req: Request<Job>, res: Response) => {
-  // first find the job
-  let job = jobs.find((j) => j.id === req.params.id);
-  if (!job) {
+const updateJob = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  let updatedJob = await Job.findByIdAndUpdate(id, req.body, {
+    new: true,
+  });
+
+  if (!updatedJob) {
     res.status(404).send(`Job with id ${req.params.id} is not found!`);
     return;
   }
-  const result = schema.parse(req.body);
-  // update jobs
-  Object.assign(job, result);
 
-  res.send(job);
+  res.status(200).json({ message: "Job Updated Successfully", updatedJob });
 };
 
 const deleteJob = async (req: Request, res: Response) => {
