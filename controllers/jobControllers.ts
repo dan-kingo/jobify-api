@@ -7,10 +7,12 @@ const getAllJobs = async (_req: Request, res: Response) => {
   res.send(jobs);
 };
 
-const getJob = (req: Request, res: Response) => {
-  const job = jobs.find((j) => j.id === req.params.id);
+const getJob = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const job = await Job.findById(id);
+  console.log(job);
   if (!job) {
-    res.send(`Job with id ${req.params.id} is not found!`);
+    res.status(404).send(`Job with id ${req.params.id} is not found!`);
     return;
   }
   res.send(job);
