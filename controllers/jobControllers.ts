@@ -1,15 +1,14 @@
 import { Request, Response } from "express";
 import Job from "../models/jobs";
+import { jobSchema } from "../schema/jobSchemas";
 
 const getAllJobs = async (_req: Request, res: Response) => {
   const jobs = await Job.find();
   res.send(jobs);
 };
 
-const getJob = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const job = await Job.findById(id);
-  console.log(job);
+const getJob = async (req: Request<jobSchema>, res: Response) => {
+  const job = await Job.findById(req.params.id);
   if (!job) {
     res.status(404).send(`Job with id ${req.params.id} is not found!`);
     return;
@@ -17,7 +16,7 @@ const getJob = async (req: Request, res: Response) => {
   res.send(job);
 };
 
-const addJob = async (req: Request, res: Response) => {
+const addJob = async (req: Request<jobSchema>, res: Response) => {
   const {
     title,
     description,
@@ -45,9 +44,8 @@ const addJob = async (req: Request, res: Response) => {
   }
 };
 
-const updateJob = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  let updatedJob = await Job.findByIdAndUpdate(id, req.body, {
+const updateJob = async (req: Request<jobSchema>, res: Response) => {
+  let updatedJob = await Job.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
   });
 
@@ -59,7 +57,7 @@ const updateJob = async (req: Request, res: Response) => {
   res.status(200).json({ message: "Job Updated Successfully", updatedJob });
 };
 
-const deleteJob = async (req: Request, res: Response) => {
+const deleteJob = async (req: Request<jobSchema>, res: Response) => {
   //first find the job
   let result = await Job.findByIdAndDelete(req.params.id);
   if (!result) {
