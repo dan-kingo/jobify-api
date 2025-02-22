@@ -2,7 +2,8 @@ import { Request, Response } from "express";
 import schema from "../schema/jobSchemas";
 import Job from "../models/jobs";
 
-const getAllJobs = (_req: Request, res: Response) => {
+const getAllJobs = async (_req: Request, res: Response) => {
+  const jobs = await Job.find();
   res.send(jobs);
 };
 
