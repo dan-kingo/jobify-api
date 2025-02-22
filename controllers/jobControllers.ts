@@ -60,17 +60,17 @@ const updateJob = (req: Request<Job>, res: Response) => {
   res.send(job);
 };
 
-const deleteJob = (req: Request<Job>, res: Response) => {
+const deleteJob = async (req: Request, res: Response) => {
   //first find the job
-  let job = jobs.find((j) => j.id === req.params.id);
-  if (!job) {
+  let result = await Job.findByIdAndDelete(req.params.id);
+  if (!result) {
     res.status(404).send(`Job with id ${req.params.id} is not found!`);
     return;
   }
-  let index = jobs.indexOf(job);
-  jobs.splice(index, 1);
 
-  res.send(job);
+  res
+    .status(200)
+    .json({ message: "Job Deleted Successfully", deletedJob: result });
 };
 
 export { updateJob, addJob, deleteJob, getAllJobs, getJob };
