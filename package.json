@@ -11,6 +11,7 @@
   "description": "",
   "devDependencies": {
     "@types/express": "^5.0.0",
+    "@types/lodash": "^4.17.15",
     "@types/morgan": "^1.9.9",
     "@types/node": "^22.13.4",
     "morgan": "^1.10.0",
@@ -24,6 +25,7 @@
     "debug": "^4.4.0",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "lodash": "^4.17.21",
     "mongoose": "^8.10.1",
     "uuid": "^11.0.5",
     "zod": "^3.24.2"

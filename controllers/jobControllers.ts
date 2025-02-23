@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
+import mongoose from "mongoose";
+import _ from "lodash";
 import Job from "../models/jobs";
 import { jobSchema } from "../schema/jobSchemas";
-import mongoose from "mongoose";
 
 const getAllJobs = async (_req: Request, res: Response) => {
   try {
@@ -31,27 +32,19 @@ const getJob = async (req: Request<jobSchema>, res: Response) => {
 };
 
 const addJob = async (req: Request<jobSchema>, res: Response) => {
-  const {
-    title,
-    description,
-    company,
-    location,
-    jobType,
-    salary,
-    requirements,
-    status,
-  } = req.body;
   try {
-    const job = await Job.create({
-      title,
-      description,
-      company,
-      location,
-      jobType,
-      salary,
-      requirements,
-      status,
-    });
+    const job = await Job.create(
+      _.pick(req.body, [
+        "title",
+        "company",
+        "salary",
+        "description",
+        "location",
+        "jobType",
+        "requirements",
+        "status",
+      ])
+    );
     res.send(job);
   } catch (err) {
     res.status(500).json({ message: "Internal server error is occured!" });
