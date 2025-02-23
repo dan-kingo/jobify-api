@@ -3,7 +3,8 @@ import _ from "lodash";
 
 import { userSchema } from "../schema/userSchemas";
 import User from "../models/users";
-import hashPassword from "../utils/hashPassword";
+import { hashPassword, comparePassword } from "../utils/hashPassword";
+
 const register = async (req: Request<userSchema>, res: Response) => {
   try {
     const isFirstAccount = (await User.countDocuments()) === 0;
@@ -30,4 +31,26 @@ const register = async (req: Request<userSchema>, res: Response) => {
   }
 };
 
-export { register };
+const login = async (req: Request, res: Response) => {
+  try {
+    const user = await User.findOne({ email: req.body.email });
+
+    if (!user) {
+      res.status(400).json({ message: "Invalid email address" });
+    }
+
+    const validPassword = await comparePassword(
+      req.body.password,
+      user.password
+    );
+
+    if (!validPassword) {
+      res.status(400).json({ message: "Invalid password" });
+    } else {
+      res.status(201).json({ success: true, message: "User logged in" });
+    }
+  } catch (err) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+export { register, login };
