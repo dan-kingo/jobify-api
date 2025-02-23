@@ -1,7 +1,9 @@
 import { Request, Response } from "express";
+import _ from "lodash";
+import bcrypt from "bcryptjs";
+
 import { userSchema } from "../schema/userSchemas";
 import User from "../models/users";
-import _ from "lodash";
 const register = async (req: Request<userSchema>, res: Response) => {
   try {
     const isFirstAccount = (await User.countDocuments()) === 0;
@@ -15,17 +17,15 @@ const register = async (req: Request<userSchema>, res: Response) => {
       res.status(400).json({ message: "User already registered!" });
       return;
     }
-    const user = await User.create(
-      _.pick(userData, [
-        "firstName",
-        "lastName",
-        "email",
-        "password",
-        "location",
-        "role",
-      ])
-    );
-    res.status(201).json({ success: true, user });
+    const salt = await bcrypt.genSalt(10);
+    const hashPassword = await bcrypt.hash(req.body.password, salt);
+
+    userData.password = hashPassword;
+    await User.create(userData);
+
+    res
+      .status(201)
+      .json({ success: true, message: "User registered successfully!" });
   } catch (err) {
     res.status(500).json({ message: "Internal server Error!" });
   }
