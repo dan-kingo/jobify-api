@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import _ from "lodash";
-import bcrypt from "bcryptjs";
 
 import { userSchema } from "../schema/userSchemas";
 import User from "../models/users";
+import hashPassword from "../utils/hashPassword";
 const register = async (req: Request<userSchema>, res: Response) => {
   try {
     const isFirstAccount = (await User.countDocuments()) === 0;
@@ -17,10 +17,9 @@ const register = async (req: Request<userSchema>, res: Response) => {
       res.status(400).json({ message: "User already registered!" });
       return;
     }
-    const salt = await bcrypt.genSalt(10);
-    const hashPassword = await bcrypt.hash(req.body.password, salt);
+    const hashPwd = await hashPassword(req.body.password);
 
-    userData.password = hashPassword;
+    userData.password = hashPwd;
     await User.create(userData);
 
     res
