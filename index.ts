@@ -10,6 +10,7 @@ import mongoose from "mongoose";
 import router from "./routes/jobRouter";
 import corsOptions from "./middlewares/corsOptionsMiddleware";
 import accessLogStream from "./middlewares/morganLoggerMiddleware";
+import userRouter from "./routes/userRouter";
 
 const app: Express = express();
 const port = process.env.PORT || 3000;
@@ -30,6 +31,7 @@ if (process.env.NODE_ENV === "development") {
   app.use(morgan("combined", { stream: accessLogStream }));
 }
 app.use("/", router);
+app.use("/", userRouter);
 app.listen(port, () => {
   appDebug(`server started at port ${port}`);
 });
