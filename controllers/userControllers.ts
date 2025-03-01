@@ -4,7 +4,7 @@ import _ from "lodash";
 import { userSchema } from "../schema/userSchemas";
 import User from "../models/users";
 import { hashPassword, comparePassword } from "../utils/hashPassword";
-import createJWT from "../utils/createJWT";
+import { createJWT } from "../utils/createJWT";
 
 const register = async (req: Request<userSchema>, res: Response) => {
   try {

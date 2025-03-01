@@ -3,8 +3,10 @@ import mongoose from "mongoose";
 import _ from "lodash";
 import Job from "../models/jobs";
 import { jobSchema } from "../schema/jobSchemas";
+import { AuthRequest } from "../middlewares/authMiddleware";
 
-const getAllJobs = async (_req: Request, res: Response) => {
+const getAllJobs = async (req: AuthRequest, res: Response) => {
+  console.log(req.user);
   try {
     const jobs = await Job.find();
     res.send(jobs);
