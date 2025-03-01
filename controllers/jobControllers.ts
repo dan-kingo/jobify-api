@@ -6,9 +6,8 @@ import { jobSchema } from "../schema/jobSchemas";
 import { AuthRequest } from "../middlewares/authMiddleware";
 
 const getAllJobs = async (req: AuthRequest, res: Response) => {
-  console.log(req.user);
   try {
-    const jobs = await Job.find();
+    const jobs = await Job.find({ createdBy: req.user.userId });
     res.send(jobs);
   } catch (err) {
     res.status(500).json({ message: "Internal server error is occured!" });
@@ -33,7 +32,8 @@ const getJob = async (req: Request<jobSchema>, res: Response) => {
   }
 };
 
-const addJob = async (req: Request<jobSchema>, res: Response) => {
+const addJob = async (req: AuthRequest, res: Response) => {
+  req.body.createdBy = req.user.userId;
   try {
     const job = await Job.create(
       _.pick(req.body, [
@@ -45,6 +45,7 @@ const addJob = async (req: Request<jobSchema>, res: Response) => {
         "jobType",
         "requirements",
         "status",
+        "createdBy",
       ])
     );
     res.send(job);
@@ -98,3 +99,14 @@ const deleteJob = async (req: Request<jobSchema>, res: Response) => {
 };
 
 export { updateJob, addJob, deleteJob, getAllJobs, getJob };
+
+/** {
+    "title" : "DevOps Engineer",
+    "description" : "fjlhfsdio dkshfsd;ol",
+    "company" : "Kingo Techs",
+    "location" : "AA, Ethiopia",
+    "jobType" : "Freelance",
+    "status" : "Open",
+    "salary" : 23000,
+    "requirements" : ["Docker","Git", "Github"]
+} */
