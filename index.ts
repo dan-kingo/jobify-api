@@ -6,11 +6,13 @@ import cors from "cors";
 import morgan from "morgan";
 import debug from "debug";
 import mongoose from "mongoose";
+import cookieParser from "cookie-parser";
 
 import router from "./routes/jobRouter";
 import corsOptions from "./middlewares/corsOptionsMiddleware";
 import accessLogStream from "./middlewares/morganLoggerMiddleware";
 import userRouter from "./routes/userRouter";
+import authMiddleware from "./middlewares/authMiddleware";
 
 const app: Express = express();
 const port = process.env.PORT || 3000;
@@ -26,12 +28,13 @@ mongoose
   });
 
 app.use(express.json());
+app.use(cookieParser());
 app.use(cors(corsOptions));
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("combined", { stream: accessLogStream }));
 }
-app.use("/", router);
-app.use("/", userRouter);
+app.use("/api/jobs", authMiddleware, router);
+app.use("/api/users", userRouter);
 app.listen(port, () => {
   appDebug(`server started at port ${port}`);
 });

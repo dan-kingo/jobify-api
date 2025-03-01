@@ -5,6 +5,6 @@ import userSchemas from "../schema/userSchemas";
 
 const userRouter = Router();
 
-userRouter.post("/api/register", validateData(userSchemas), register);
-userRouter.post("/api/login", login);
+userRouter.post("/register", validateData(userSchemas), register);
+userRouter.post("/login", login);
 export default userRouter;

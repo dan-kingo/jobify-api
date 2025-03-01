@@ -36,6 +36,10 @@ const jobSchema = new mongoose.Schema(
       enum: ["Open", "Closed"],
       default: "Open",
     },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
   },
   { timestamps: true }
 );
