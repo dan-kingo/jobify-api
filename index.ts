@@ -33,8 +33,10 @@ app.use(cors(corsOptions));
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("combined", { stream: accessLogStream }));
 }
+
 app.use("/api/jobs", authMiddleware, router);
 app.use("/api/users", userRouter);
+
 app.listen(port, () => {
   appDebug(`server started at port ${port}`);
 });
