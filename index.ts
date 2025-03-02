@@ -11,7 +11,7 @@ import cookieParser from "cookie-parser";
 import router from "./routes/jobRouter";
 import corsOptions from "./middlewares/corsOptionsMiddleware";
 import accessLogStream from "./middlewares/morganLoggerMiddleware";
-import userRouter from "./routes/userRouter";
+import userRouter from "./routes/authRouter";
 import authMiddleware from "./middlewares/authMiddleware";
 
 const app: Express = express();
