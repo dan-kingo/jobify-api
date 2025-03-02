@@ -2,6 +2,7 @@ import { Response } from "express";
 import _ from "lodash";
 import { AuthRequest } from "../middlewares/authMiddleware";
 import User from "../models/users";
+import Job from "../models/jobs";
 
 const getCurrentUser = async (req: AuthRequest, res: Response) => {
   try {
@@ -57,4 +58,21 @@ const updateUser = async (req: AuthRequest, res: Response) => {
   }
 };
 
-export { getCurrentUser, updateUser };
+const getApplicationStats = async (_req: AuthRequest, res: Response) => {
+  try {
+    const users = await User.countDocuments();
+    const jobs = await Job.countDocuments();
+
+    res.status(200).json({
+      success: true,
+      users,
+      jobs,
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: "Internal server error occured!",
+    });
+  }
+};
+
+export { getCurrentUser, updateUser, getApplicationStats };
