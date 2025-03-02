@@ -11,8 +11,9 @@ import cookieParser from "cookie-parser";
 import router from "./routes/jobRouter";
 import corsOptions from "./middlewares/corsOptionsMiddleware";
 import accessLogStream from "./middlewares/morganLoggerMiddleware";
-import userRouter from "./routes/authRouter";
+import authRouter from "./routes/authRouter";
 import authMiddleware from "./middlewares/authMiddleware";
+import userRouter from "./routes/userRouter";
 
 const app: Express = express();
 const port = process.env.PORT || 3000;
@@ -35,7 +36,8 @@ if (process.env.NODE_ENV === "development") {
 }
 
 app.use("/api/jobs", authMiddleware, router);
-app.use("/api/users", userRouter);
+app.use("/api/auth", authRouter);
+app.use("/api/users", authMiddleware, userRouter);
 
 app.listen(port, () => {
   appDebug(`server started at port ${port}`);

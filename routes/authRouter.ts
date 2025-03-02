@@ -3,10 +3,10 @@ import { validateData } from "../middlewares/validationMiddleware";
 import { login, logout, register } from "../controllers/authControllers";
 import userSchemas from "../schema/userSchemas";
 
-const userRouter = Router();
+const authRouter = Router();
 
-userRouter.post("/register", validateData(userSchemas), register);
-userRouter.post("/login", login);
-userRouter.get("/logout", logout);
+authRouter.post("/register", validateData(userSchemas), register);
+authRouter.post("/login", login);
+authRouter.get("/logout", logout);
 
-export default userRouter;
+export default authRouter;
