@@ -38,6 +38,7 @@ const login = async (req: Request, res: Response) => {
 
     if (!user) {
       res.status(400).json({ message: "Invalid email address" });
+      return;
     }
 
     const validPassword = await comparePassword(
@@ -47,6 +48,7 @@ const login = async (req: Request, res: Response) => {
 
     if (!validPassword) {
       res.status(400).json({ message: "Invalid password" });
+      return;
     } else {
       const token = createJWT({ userId: user._id.toString(), role: user.role });
 
@@ -57,6 +59,7 @@ const login = async (req: Request, res: Response) => {
         secure: process.env.NODE_ENV === "production",
       });
       res.status(200).json({ success: true, message: "User logged in" });
+      return;
     }
   } catch (err) {
     res.status(500).json({ message: "Internal server error" });
